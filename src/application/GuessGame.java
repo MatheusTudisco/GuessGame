@@ -1,125 +1,97 @@
 package application;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GuessGame {
 
-	/*O Guess Game tem três variáveis de 
-	 * instância para os três objetos player
-	 */
-	
-	Player p1;
-	Player p2;
-	Player p3;
-	
 	public void startGame() {
-		
-		/*Cria três objetos Player e os atribui às três 
-		 * variáveis de instância Player.
+		/*Instância a variável Scanner, cria a váriavel que
+		 * armazena o digitado pelo usuário
 		 */
+		Scanner kb = new Scanner(System.in);
+		System.out.print("Enter the number os players: ");
+		int playerCount = kb.nextInt();
 		
-		p1 = new Player();
-		p2 = new Player();
-		p3 = new Player();
+		/*Cria a ArrayList vazia*/
+		ArrayList<Player> players = new ArrayList<>();
 		
-		/*Declara três variáveis para armazenar os três 
-		 * palpites feitos pelos jogadores.
+		/*Gera um loop para criar quantos jogadores
+		 * foram digitados
 		 */
-		
-		int guessp1 = 0;
-		int guessp2 = 0;
-		int guessp3 = 0;
-		
-		/*Declara três variáveis para armazenar um valor true or false 
-		 * com base na resposta do jogador
-		 */
-		
-		boolean P1isRight = false;
-		boolean P2isRight = false;
-		boolean P3isRight = false;
+		for(int i=0;i<playerCount; i++) {
+			players.add(new Player());
+		}
 		
 		/*Cria um número 'alvo' que os jogadores
 		 * tem que adivinhar;
-		 */
-		
+		 */	
 		int targetNumber = (int) (Math.random() * 10);
 		System.out.println("I'm thinking of number between 0 and 9\n");
 		
-		while(true){
-
-			//Chama o método guess() de cada jogador
-			System.out.println("\nPlayer one, It's your turn\n");
-			p1.guess();
-			System.out.println("\nPlayer two, It's your turn\n");
-			p2.guess();
-			System.out.println("\nPlayer three, It's your turn\n");
-			p3.guess();
+		/*Cria a váriavel boolean que será utilizada em forma
+		 * de controle para finalizar ou continuar o jogo
+		 */
+		Boolean jogoAcabou = false;
+		while(jogoAcabou == false){
 			
-			/*recebe o palpite de cada jogador (O resultao da execução do método guess())
-			 * acessando a variável do palpite de cada jogador
+			/*Cria um ArrayList guessPLayers para 
+			 * armazenar o método guess() de cada jogador
 			 */
+			ArrayList<Integer> guessPlayers = new ArrayList<>();
 			
-			guessp1 = p1.number;
-			System.out.println("\nPlayer one guessed " + guessp1);
-			guessp2 = p2.number;
-			System.out.println("\nPlayer two guessed " + guessp2);
-			guessp3 = p3.number;
-			System.out.println("\nPlayer three guessed " + guessp3);
+			//Criação do loop para acessar o Arraylist guessPlayers
+			for(int i=0;i<playerCount; i++) {
+				
+			//Chama o método guess() de cada jogador instânciado
+			System.out.printf("\nPlayer %d, It's your turn%n", i+1);
+			players.get(i).guess();
 			
-			/*Verifica o palpite de cada ogador para ver se corresponde
-			 * ao 'alvo'. Se um jogador acertar, define a variável desse
-			 * jogador como verdadeira (lembre-se definimos como falsa
-			 * por padrão
-			 */
-			
-			if(guessp1 == targetNumber) {
-				P1isRight = true;
-			}
-			if(guessp2 == targetNumber) {
-				P2isRight = true;
-			}
-			if(guessp3 == targetNumber) {
-				P3isRight = true;
+			//Armazena o resultado do método guess de cada player na lista guessPlayers
+			guessPlayers.add(players.get(i).number);
+			System.out.printf("\nPlayer %d guessed %d%n ", i+1, guessPlayers.get(i));
 			}
 			
-			/*Se o jogador um OU o jogador dois OU o jogador três acertar, gera um contador para
-			 * mudar a mensagem de ganhadores, caso exista mais de um ele muda
-			 */
+			/*Criação do ArrayList que armazena se o jogador acertou ou
+			 * errou o palpite.*/
+			ArrayList<Boolean>playerIsRight = new ArrayList<>();
 			
-			if(P1isRight || P2isRight || P3isRight) {
-				
-				int numberofWinners = 0;
-				
-				if(P1isRight) {
-					numberofWinners++;
-				}
-				if(P2isRight) {
-					numberofWinners++;
-				}
-				if(P3isRight) {
-					numberofWinners++;
-				}
-				
-				if(numberofWinners > 1) {
-					System.out.println("\nWe have Winners!");
-				} else {
-					System.out.println("\nWe have a Winner!");
-				}
-				
-				if(P1isRight) {
-					System.out.println("\nPlayer 1 got it right! CONGRATULATIONS!\n");
-				}
-				if(P2isRight) {
-					System.out.println("\nPlayer 2 got it right! CONGRATULATIONS!\n");
-				}
-				if(P3isRight) {
-					System.out.println("\nPlayer 3 got it right! CONGRATULATIONS!\n");
-				}
-				System.out.println("\nNumber to guess is " + targetNumber);
-				System.out.println("Game is over.");
-				break; //Fim de jogo, acabou o loop
-			} else {
-				// Temos que continuar porque ninguém acertou!
-				System.out.println("\nPlayers will have to try again.");
+			/*Loop para acessar o ArrayList guessPlayers e comparar
+			 * se o palpite do jogador está correto, caso esteja correto
+			 * se adiciona o valor True a ArrayList playerIsRight
+			 * Não necessita uso de índice pois o método add() utiliza por padrão 
+			 * um comportamento de "fila indiana", ele sempre joga a nova informação
+			 * na próxima gaveta vazia.*/
+			for(int i=0; i<playerCount; i++) {		
+			if(guessPlayers.get(i) == targetNumber) {
+				playerIsRight.add(Boolean.TRUE);
+			}else{
+				playerIsRight.add(Boolean.FALSE);
 			}
 		}
+			/*Verifica se cada jogador acertou o palpite,
+			 * verificando por índice, se o valor for True ele habilita IF
+			 * e imprime na tela o vencedor e atribui para a variável 
+			 * 'jogoAcabou' o valor TRUE.*/
+			for(int i=0; i<playerCount; i++) {				
+			if(playerIsRight.get(i) == true) {
+				System.out.printf("%nThe winner is Player %d%n", i+1);
+				jogoAcabou = true;
+			}
+		}
+			/*Verifica a variável 'jogoAcabou', se ela for TRUE executa
+			 * o IF e imprime na tela as mensagens de ganhadores,
+			 * caso for FALSE executa o ELSE e imprime a mensagem de
+			 * tentar novamente.*/
+			if (jogoAcabou == true) 
+			{
+				System.out.println("\nWe have winner!\n");
+				System.out.println("Number to guess is " + targetNumber);
+				System.out.println("Game is over.");
+				} else {
+					System.out.println("\nPlayers will have to try again.");
+				}
+		}
+	kb.close();//Encerra a variável 'kb' do Scanner.
 	}
 }
+
