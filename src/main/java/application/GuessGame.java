@@ -27,7 +27,6 @@ public class GuessGame {
 		
 		gameMath.sortearNumero();
 		terminal.jogoPensando();
-		System.out.println(gameMath.getTargetNumber());
 
 		/*
 		 * Cria a váriavel boolean que será utilizada em forma de controle para
